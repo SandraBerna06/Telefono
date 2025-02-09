@@ -29,60 +29,61 @@ public class Main {
                     telefonomovil.printContacts();
                     break;
                 case 2:
-                    System.out.println("Introduce el nombre del usuario a crear:");
                     scanner.nextLine();
+                    System.out.println("Introduce el nombre del usuario a crear:");
                     String nombre = scanner.nextLine();
-                    System.out.println("Introduce el número de teléfono de la persona:");
-                    String telf = scanner.nextLine();
-                    contacto2 = new Contacto(nombre, telf);
-                    if ((telefonomovil.findsContact(contacto2)) < 0) {
-                        System.out.println("El contacto no existe, se ha creado con éxito");
-                        telefonomovil.addNewContact(contacto2);
+                    if (telefonomovil.queryContact(nombre) != null) {
+                        System.out.println("No se puede crear porque el nombre ya existe");
                     } else {
-                        System.out.println("El contacto ya existe, no se puede crear");
+                        System.out.println("Introduce el número de teléfono de la persona:");
+                        String telf = scanner.nextLine();
+                        Contacto contactoNuevo = Contacto.createContact(nombre, telf);
+                        telefonomovil.addNewContact(contactoNuevo);
                     }
                     break;
                 case 3:
-                    System.out.println("¿Qué contacto desea actualiazar?");
                     scanner.nextLine();
-                    String persona=scanner.nextLine();
-
-                    int numContacto = telefonomovil.queryContact(persona);
-                    if (numContacto == -1) {
+                    System.out.println("¿Qué contacto desea actualizar?");
+                    String persona = scanner.nextLine();
+                    Contacto c = telefonomovil.queryContact(persona);
+                    if (c == null) {
                         System.out.println("El contacto no existe, no se puede actualizar");
                     } else {
-                        System.out.println("El contacto existe, se puede actualizar");
-                        System.out.println("Introduce el nuevo nombre a cambiar");
-                        String nuevaPersona=scanner.nextLine();
-                        System.out.println("Introduce el nuevo número de teléfono");
-                        String telf2=scanner.nextLine();
-
-                        telefonomovil.updateContact(numContacto, new Contacto(nuevaPersona, telf2));
+                        System.out.println("Introduce el nuevo nombre a cambiar:");
+                        String nuevaPersona = scanner.nextLine();
+                        if (telefonomovil.queryContact(nuevaPersona) == null) {
+                            System.out.println("Introduce el nuevo número de teléfono:");
+                            String telf2 = scanner.nextLine();
+                            Contacto nuevoContacto = new Contacto(nuevaPersona, telf2);
+                            telefonomovil.updateContact(c, nuevoContacto);
+                        } else {
+                            System.out.println("No se puede actualizar porque el nombre ya existe");
+                        }
                     }
-
                     break;
                 case 4:
                     scanner.nextLine();
-                    System.out.println("Introduce un nombre que esté en la lista que desee eliminar");
-                    String nombreEliminar= scanner.nextLine();
-                    int posicionContacto = telefonomovil.queryContact(nombreEliminar);
-                    if (posicionContacto >= 0){
-                       telefonomovil.removeContact(telefonomovil.myContacts.get(posicionContacto));
-                    }else{
+                    System.out.println("Introduce un nombre que esté en la lista que desees eliminar:");
+                    String nombreEliminar = scanner.nextLine();
+                    if (telefonomovil.queryContact(nombreEliminar) != null) {
+                        telefonomovil.removeContact(telefonomovil.queryContact(nombreEliminar));
+                        System.out.println("Contacto eliminado");
+                    } else {
                         System.out.println("No se puede eliminar ya que no existe");
                     }
-
+                    break;
                 case 5:
                     scanner.nextLine();
-                    System.out.println("Introduce el nombre a buscar");
-                    String nombreBuscar=scanner.nextLine();
-                    int posicionContacto2=telefonomovil.queryContact(nombreBuscar);
-                    if(posicionContacto2>=0){
+                    System.out.println("Introduce el nombre a buscar:");
+                    String nombreBuscar = scanner.nextLine();
+                    Contacto contactoBuscado = telefonomovil.queryContact(nombreBuscar);
+                    if (contactoBuscado != null) {
                         System.out.println("El teléfono existe");
-                        System.out.println("- " + contacto.getName() + " --> " + contacto.getPhoneNumber());
-                    }else{
-                        System.out.println("El teléfono no existe por lo que no podemos buscarlo.");
+                        System.out.println("- " + contactoBuscado.getName() + " --> " + contactoBuscado.getPhoneNumber());
+                    } else {
+                        System.out.println("El teléfono no existe, por lo que no podemos buscarlo.");
                     }
+                    break;
                     
             }
         }
